@@ -9,10 +9,7 @@ import br.com.marco.screenmactch.services.ConverteDados;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -72,20 +69,48 @@ public class Principal {
 
         episodios.forEach(System.out::println);
 
-        System.out.println("A partir de que ano voce deseja ver os espisódios ");
-        var ano = entradaDeDados.nextInt();
-        entradaDeDados.nextLine();
+//
+//        System.out.println("Digite o nome do episódio: ");
+//        var trechoTitulo = entradaDeDados.nextLine();
+//        Optional<Episodio> episodioBuscado = episodios.stream()
+//                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+//                .findFirst();
+//
+//        if (episodioBuscado.isPresent()){
+//            System.out.println("Episodio encontrado");
+//            System.out.println("Temporada: " + episodioBuscado.get().getTemporada());
+//        }else {
+//            System.out.println("Episódio não encontrado");
+//        }
+//
+//        System.out.println("A partir de que ano voce deseja ver os espisódios ");
+//        var ano = entradaDeDados.nextInt();
+//        entradaDeDados.nextLine();
+//
+//        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//        episodios.stream()
+//                .filter(e -> e.getDataLancamento() != null &&
+//                        e.getDataLancamento().isAfter(dataBusca))
+//                .forEach(e -> System.out.println(
+//                        "Temporada: " + e.getTemporada() +
+//                                "Episódio: " + e.getTitulo() +
+//                                 " - Data lançamento: " + e.getDataLancamento().format(formatter)
+//                ));
 
-        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        episodios.stream()
-                .filter(e -> e.getDataLancamento() != null &&
-                        e.getDataLancamento().isAfter(dataBusca))
-                .forEach(e -> System.out.println(
-                        "Temporada: " + e.getTemporada() +
-                                "Episódio: " + e.getTitulo() +
-                                 "Data lançamento: " + e.getDataLancamento().format(formatter)
-                ));
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvaliacao)));
+
+        System.out.println(avaliacoesPorTemporada);
+
+        DoubleSummaryStatistics est = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+
+        System.out.println(est);
     }
 }
