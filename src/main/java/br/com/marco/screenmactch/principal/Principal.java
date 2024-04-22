@@ -4,8 +4,10 @@ import br.com.marco.screenmactch.models.DadosSerie;
 import br.com.marco.screenmactch.models.DadosTemporada;
 import br.com.marco.screenmactch.models.Episodio;
 import br.com.marco.screenmactch.models.Serie;
+import br.com.marco.screenmactch.repositorio.SerieRepositorio;
 import br.com.marco.screenmactch.services.ConsumoAPI;
 import br.com.marco.screenmactch.services.ConverteDados;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,6 +23,12 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
     private final String API_KEY = "&apikey=939b7e0b";
     private List<DadosSerie> dadosSeries = new ArrayList<>();
+
+    private SerieRepositorio repositorio;
+
+    public Principal(SerieRepositorio repositorio) {
+        this.repositorio = repositorio;
+    }
 
     public void exibeMenu() {
 
@@ -64,7 +72,8 @@ public class Principal {
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        dadosSeries.add(dados);
+        Serie serie = new Serie(dados);
+        repositorio.save(serie);
         System.out.println(dados);
     }
 
@@ -91,10 +100,7 @@ public class Principal {
 
     private void listarSeriesBuscadas() {
 
-        List<Serie> series = new ArrayList<>();
-        dadosSeries.stream()
-                        .map( d -> new Serie(d))
-                                .collect(Collectors.toList());
+        List<Serie> series = repositorio.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
