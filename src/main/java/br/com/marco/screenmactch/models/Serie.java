@@ -1,9 +1,7 @@
 package br.com.marco.screenmactch.models;
 
-import br.com.marco.screenmactch.services.ConsultarChatGPT;
-import com.fasterxml.jackson.annotation.JsonAlias;
+
 import jakarta.persistence.*;
-import jdk.jfr.Enabled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,9 @@ public class Serie
         private String atores;
         private String poster;
         private String sinopse;
-        @Transient
+        @OneToMany(mappedBy = "serie",
+                cascade = CascadeType.ALL,
+                fetch = FetchType.EAGER)
         private List<Episodio> episodios = new ArrayList<>();
 
         public Serie(){}
@@ -52,6 +52,7 @@ public class Serie
         }
 
         public void setEpisodios(List<Episodio> episodios) {
+                episodios.forEach(e -> e.setSerie(this));
                 this.episodios = episodios;
         }
 
@@ -122,12 +123,13 @@ public class Serie
         @Override
         public String toString() {
                 return
-                        "genero=" + genero +
-                        ", titulo='" + titulo + '\'' +
-                        ", totalTemporadas=" + totalTemporadas +
-                        ", avaliacao=" + avaliacao +
-                        ", atores='" + atores + '\'' +
-                        ", poster='" + poster + '\'' +
-                        ", sinopse='" + sinopse + '\'';
+                        "genero =" + genero +
+                        ", titulo ='" + titulo + '\'' +
+                        ", totalTemporadas =" + totalTemporadas +
+                        ", avaliacao =" + avaliacao +
+                        ", atores ='" + atores + '\'' +
+                        ", poster ='" + poster + '\'' +
+                        ", sinopse ='" + sinopse + '\''+
+                        ", episodios = '" + episodios + '\'';
         }
 }

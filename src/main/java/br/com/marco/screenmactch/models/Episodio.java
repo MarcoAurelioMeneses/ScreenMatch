@@ -1,23 +1,35 @@
 package br.com.marco.screenmactch.models;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.ManyToAny;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
     private String titulo;
     private Double avaliacao;
     private LocalDate dataLancamento;
     private Integer numero;
+    @ManyToOne
+    private Serie serie;
+
+    public Episodio(){}
+
+
+
+
+
+
 
     public Episodio(Integer numeroTemporada, DadosEpisodio dadosEpisodio) {
         this.temporada = numeroTemporada;
@@ -38,6 +50,32 @@ public class Episodio {
 
     }
 
+
+
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Integer getTemporada() {
         return temporada;
